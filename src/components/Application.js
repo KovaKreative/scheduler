@@ -1,50 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import "components/Application.scss";
 
 import DayList from "./DayList";
 import Appointment from './Appointment';
 
-import Axios from 'axios';
+import { getAppointmentsForDay, getInterviewersForDay, getInterview } from 'helpers/selectors';
 
-import { getAppointmentsForDay, getInterview, getInterviewersForDay } from 'helpers/selectors';
+import useApplicationData from 'hooks/useApplicationData';
 
 export default function Application() {
-  const [state, setState] = useState({ day: "Monday", days: [], appointments: {}, interviewers: {} });
 
-  const setDay = day => setState(prev => ({ ...prev, day }));
+  const { state, setDay, bookInterview, cancelInterview } = useApplicationData();
 
   const dailyAppointments = getAppointmentsForDay(state);
   const dailyInterviewers = getInterviewersForDay(state);
-
-  useEffect(() => {
-
-    Promise.all([
-      Axios.get('http://localhost:8001/api/days'),
-      Axios.get('http://localhost:8001/api/appointments'),
-      Axios.get('http://localhost:8001/api/interviewers')
-    ])
-      .then((all) => {
-        const [days, appointments, interviewers] = all;
-        setState(prev => ({ ...prev, days: days.data, appointments: appointments.data, interviewers: interviewers.data }));
-      });
-  }, []);
-
-  function bookInterview(id, interview) {
-    console.log(id, interview);
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return Axios.put(`/api/appointments/${id}`, { interview } )
-      .then(res => {
-        setState({ ...state, appointments });
-      });
-  }
 
   const appointmentComponents = dailyAppointments.map(a => {
     return <Appointment
@@ -54,6 +24,7 @@ export default function Application() {
       interviewers={dailyInterviewers}
       time={a.time}
       bookInterview={bookInterview}
+      cancelInterview={cancelInterview}
     />;
   });
 
