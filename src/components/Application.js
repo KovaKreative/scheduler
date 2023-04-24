@@ -30,12 +30,31 @@ export default function Application() {
       });
   }, []);
 
+  function bookInterview(id, interview) {
+    console.log(id, interview);
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+    setState({ ...state, appointments });
+  }
+
   const appointmentComponents = dailyAppointments.map(a => {
-    return <Appointment key={a.id} id={a.id} interview={getInterview(state, a.interview)} interviewers={dailyInterviewers} time={a.time} />;
+    return <Appointment
+      key={a.id}
+      id={a.id}
+      interview={getInterview(state, a.interview)}
+      interviewers={dailyInterviewers}
+      time={a.time}
+      bookInterview={bookInterview}
+    />;
   });
 
   appointmentComponents.push(<Appointment key="last" time="5pm" />);
-
 
   return (
     <main className="layout">
