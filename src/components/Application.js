@@ -40,7 +40,10 @@ export default function Application() {
       ...state.appointments,
       [id]: appointment
     };
-    setState({ ...state, appointments });
+    return Axios.put(`/api/appointments/${id}`, { interview } )
+      .then(res => {
+        setState({ ...state, appointments });
+      });
   }
 
   const appointmentComponents = dailyAppointments.map(a => {
