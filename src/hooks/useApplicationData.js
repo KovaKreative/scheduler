@@ -1,11 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import Axios from 'axios';
 
 export default function useApplicationData() {
 
-  const [state, setState] = useState({ day: "Monday", days: [], appointments: {}, interviewers: {} });
+  // const [state, setState] = useState({ day: "Monday", days: [], appointments: {}, interviewers: {} });
 
-  const setDay = day => setState(prev => ({ ...prev, day }));
+
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case SET_DAY:
+        return { ...state, day:action.day };
+      case SET_APPLICATION_DATA:
+        const { days, appointments, interviewers } = action;
+        return { ...state, days, appointments, interviewers };
+      case SET_INTERVIEW: {
+        const { appointments, days } = action;
+        return { ...state, appointments, days };
+      }
+      default:
+        throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, { day: "Monday", days: [], appointments: {}, interviewers: {} });
+
+  const setDay = (day) => dispatch({ type: SET_DAY, day });
 
   function updateSpots(appointments) {
     let days = state.days.map(d => {
@@ -22,7 +45,7 @@ export default function useApplicationData() {
     ])
       .then((all) => {
         const [days, appointments, interviewers] = all;
-        setState(prev => ({ ...prev, days: days.data, appointments: appointments.data, interviewers: interviewers.data }));
+        dispatch({ type: SET_APPLICATION_DATA, days, appointments, interviewers });
       });
   }, []);
 
@@ -38,8 +61,8 @@ export default function useApplicationData() {
     };
     const days = updateSpots(appointments);
     return Axios.put(`/api/appointments/${id}`, { interview })
-      .then(res => {
-        return setState({ ...state, appointments, days });
+      .then(() => {
+        return dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
 
@@ -53,7 +76,7 @@ export default function useApplicationData() {
       .then(() => {
         const appointments = { ...state.appointments, [id]: appointment };
         const days = updateSpots(appointments);
-        setState({ ...state, appointments, days  });
+        return dispatch({ type: SET_INTERVIEW, appointments, days });
       });
   }
 
