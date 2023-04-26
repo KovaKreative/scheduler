@@ -4,7 +4,7 @@ import "./styles.scss";
 import Header from "./Header";
 import Show from "./Show";
 import Empty from "./Empty";
-import Form from "components/Form";
+import Form from "./Form";
 import Confirm from "./Confirm";
 import Status from "./Status";
 import Error from "./Error";
@@ -34,7 +34,7 @@ export default function Appointment(props) {
     if (interview === null && mode === MODE.SHOW) {
      transition(MODE.EMPTY);
     }
-   }, [interview, transition, mode]);
+   }, [interview, transition, mode, MODE]);
    
 
   function save(name, interviewer) {

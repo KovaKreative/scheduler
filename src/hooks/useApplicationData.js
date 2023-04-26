@@ -1,5 +1,5 @@
 import { useReducer, useEffect } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 
 export default function useApplicationData() {
 
@@ -62,9 +62,9 @@ export default function useApplicationData() {
     };
 
     Promise.all([
-      Axios.get('http://localhost:8001/api/days'),
-      Axios.get('http://localhost:8001/api/appointments'),
-      Axios.get('http://localhost:8001/api/interviewers')
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers')
     ]).then((all) => {
       const [days, appointments, interviewers] = all;
       dispatch({ type: SET_APPLICATION_DATA, days: days.data, appointments: appointments.data, interviewers: interviewers.data });
@@ -74,14 +74,14 @@ export default function useApplicationData() {
 
 
   function bookInterview(id, interview) {
-    return Axios.put(`/api/appointments/${id}`, { interview })
+    return axios.put(`/api/appointments/${id}`, { interview })
       .then(() => {
         return dispatch({ type: SET_INTERVIEW, id, interview });
       });
   }
 
   function cancelInterview(id) {
-    return Axios.delete(`/api/appointments/${id}`)
+    return axios.delete(`/api/appointments/${id}`)
       .then(() => {
         return dispatch({ type: SET_INTERVIEW, id, interview: null });
       });
