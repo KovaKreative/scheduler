@@ -6,7 +6,6 @@ import DayList from "./DayList";
 import Appointment from './Appointment';
 
 import { getAppointmentsForDay, getInterviewersForDay, getInterview } from 'helpers/selectors';
-
 import useApplicationData from 'hooks/useApplicationData';
 
 export default function Application() {

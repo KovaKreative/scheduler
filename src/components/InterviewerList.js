@@ -1,14 +1,13 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import InterviewerListItem from "./InterviewerListItem";
-import "./InterviewerList.scss"
+import "./InterviewerList.scss";
 
 function InterviewerList(props) {
 
   const interviewerList = props.interviewers.map(i => {
-    return <InterviewerListItem key={i.id} name={i.name} avatar={i.avatar} selected={i.id === props.value} setInterviewer={() => {props.onChange(i.id)}}  />;
+    return <InterviewerListItem key={i.id} name={i.name} avatar={i.avatar} selected={i.id === props.value} setInterviewer={() => { props.onChange(i.id); }} />;
   });
-
 
   return (
     <section className="interviewers">
