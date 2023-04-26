@@ -79,5 +79,17 @@ export default {
         data: fixtures.interviewers
       });
     }
+  }),
+  put: jest.fn(() => {
+    return Promise.resolve({
+      status: 200,
+      statusText: "OK"
+    });
+  }),
+  delete: jest.fn(() => {
+    return Promise.resolve({
+      status: 200,
+      statusText: "OK"
+    });
   })
 };
